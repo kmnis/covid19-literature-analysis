@@ -1,3 +1,4 @@
+import csv
 import pandas as pd
 import numpy as np
 import json
@@ -5,7 +6,6 @@ from tqdm import tqdm
 import click
 from glob import glob
 import os
-
 
 pj = os.path.join
 
@@ -39,15 +39,24 @@ def get_affiliations():
     return
 
 
-def get_abstract(json_file):
+def get_abstract(json_file, pmc):
     """
     Get the abstract of the paper
     :param json_file: JSON file object
+    :param pmc: PMC papers have slightly different structure so needs additional processing
     :return: Return the abstarct of the paper, all paragraphs joined together by a line break
     """
-    abstract_dict = json_file['abstract']
-    abstract = "\n".join([a['text'] for a in abstract_dict])
-    return abstract
+    if pmc:
+        abstract = []
+        body_text = json_file["body_text"]
+        for text in body_text:
+            if text["section"].lower() == "abstract":
+                abstract.append(text["text"])
+    else:
+        abstract_dict = json_file['abstract']
+        abstract = [a['text'] for a in abstract_dict]
+
+    return "\n".join(abstract)
 
 
 def get_body_text(json_file):
@@ -59,6 +68,30 @@ def get_body_text(json_file):
     body_dict = json_file['body_text']
     body_text = "\n".join([b['text'] for b in body_dict])
     return body_text
+
+
+def parse_jsons(json_paths, paper_df, ignore_missing_titles, pmc):
+    """
+    Parse the JSONs and extract relevant data from them
+    :param json_paths: A list of file paths
+    :param paper_df: A CSV object to write the data to
+    :param ignore_missing_titles: Whether to ignore the papers with missing titles
+    :param pmc: PMC papers have slightly different structure so needs additional processing
+    :return:
+    """
+    for p in tqdm(json_paths[0:5000]):
+        paper = load_json(p)
+        paper_id = paper['paper_id']
+        title = paper["metadata"]["title"]
+
+        if (not title) and ignore_missing_titles:
+            continue
+
+        authors = get_authors(paper)
+        abstract = get_abstract(paper, pmc)
+        body_text = get_body_text(paper)
+
+        paper_df.writerow([paper_id, title, authors, abstract, body_text])
 
 
 @click.command()
@@ -79,25 +112,20 @@ def main(path, ignore_missing_titles):
     :param path: Path to the folder where the file is unzipped
     :return:
     """
-    json_paths = glob(pj(path, "document_parses/**/*.json"))
+    # Initiliaze a CSV write object. Using pandas dataframe is note a good idea because the dataset size is huge and
+    # may not fit in the machine memory
+    paper_df = csv.writer(open(path + "parsed_papers.csv", 'w'))
+    paper_df.writerow(["paper_id", "title", "authors", "abstract", "body_text"])
 
-    df_data = []
-    for p in tqdm(json_paths):
-        paper = load_json(p)
-        paper_id = paper['paper_id']
-        title = paper["metadata"]["title"]
+    print("Fetching list of file paths")
+    pdf_paths = glob(pj(path, "document_parses/pdf_json/*.json"))
+    pmc_paths = glob(pj(path, "document_parses/pmc_json/*.json"))
 
-        if (not title) and ignore_missing_titles:
-            continue
+    print("Loading metadata csv file")
+    metadata = pd.read_csv("metadata.csv")
 
-        authors = get_authors(paper)
-        abstract = get_abstract(paper)
-        body_text = get_body_text(paper)
-        df_data.append([paper_id, title, authors, abstract, body_text])
-
-    paper_df = pd.DataFrame(data=df_data, columns=["paper_id", "title", "authors", "abstract", "body_text"])
-    paper_df.to_csv(path + "parsed_data.csv", index=False)
-    print(paper_df.shape, paper_df.paper_id.unique().shape)
+    parse_jsons(pdf_paths, paper_df, ignore_missing_titles, pmc=False)
+    parse_jsons(pmc_paths, paper_df, ignore_missing_titles, pmc=True)
 
 
 if __name__ == '__main__':
