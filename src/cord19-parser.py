@@ -122,7 +122,7 @@ def main(path, ignore_missing_titles):
     pmc_paths = glob(pj(path, "document_parses/pmc_json/*.json"))
 
     print("Loading metadata csv file")
-    metadata = pd.read_csv("metadata.csv")
+    # metadata = pd.read_csv("metadata.csv")
 
     parse_jsons(pdf_paths, paper_df, ignore_missing_titles, pmc=False)
     parse_jsons(pmc_paths, paper_df, ignore_missing_titles, pmc=True)
