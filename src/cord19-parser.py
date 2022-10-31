@@ -147,6 +147,22 @@ def handle_pdf_json(metadata: pd.DataFrame, index: int, pdf_path: str):
     return pdf_data
 
 
+def fetch_additional_data(metadata, name, index, data):
+    """
+
+    :param metadata:
+    :param name:
+    :param index:
+    :param data:
+    :return:
+    """
+    feat = metadata[name][index]
+    if pd.isna(feat):
+        feat = ""
+    data.append(feat)
+    return data
+
+
 @click.command()
 @click.argument('path', nargs=1, type=click.Path(exists=True))
 # @click.option('-i', '--ignore-missing-titles', default=True, required=False, type=bool,
@@ -168,7 +184,9 @@ def main(path):
     # Initiliaze a CSV write object. Using pandas dataframe is note a good idea because the dataset size is huge and
     # may not fit in the machine memory
     paper_df = csv.writer(open(path + "parsed_papers.csv", 'w'))
-    paper_df.writerow(["paper_id", "title", "authors", "abstract", "body_text", "publish_time", "journal"])
+    paper_cols = ["paper_id", "title", "authors", "abstract", "body_text", "publish_time", "journal",
+                  "doi", "pubmed_id", "pmcid", "arxiv_id", "url"]
+    paper_df.writerow(paper_cols)
 
     print("Loading metadata csv file")
     metadata = pd.read_csv(pj(path, "metadata.csv"))
@@ -188,19 +206,10 @@ def main(path):
             data = []
 
         if len(data) and data[1]:
-            publish_time = metadata.publish_time[index]
-            journal = metadata.journal[index]
+            for f in paper_cols[5:]:
+                data = fetch_additional_data(metadata, f, index, data)
 
-            if pd.isna(publish_time):
-                publish_time = ""
-
-            if pd.isna(journal):
-                journal = ""
-
-            data.append(publish_time)
-            data.append(journal)
             paper_df.writerow(data)
-
             paper_count += 1
 
     print("Total papers fetched:", paper_count)
