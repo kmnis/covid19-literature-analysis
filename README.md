@@ -33,14 +33,8 @@ Dataset consists of JSON and CSV files. Each paper is saved in a nested JSON fil
 ## Results
 Below are a few sample results of topic modeling
 
-![Topic 1](https://user-images.githubusercontent.com/20987291/216571859-4ff168ed-322c-4b01-ba38-350d7e6fe91d.png)
+![Topic 1](https://user-images.githubusercontent.com/20987291/216571859-4ff168ed-322c-4b01-ba38-350d7e6fe91d.png) ![Topic 2](https://user-images.githubusercontent.com/20987291/216572189-38a6532f-9896-48df-af9f-bb92fec4a981.png) ![Topic 3](https://user-images.githubusercontent.com/20987291/216572743-0493ae58-28da-48cf-9efd-b9332b0db24e.png)
 
-These papers seem to be concerned with immune response and antibodies
-
-![Topic 2](https://user-images.githubusercontent.com/20987291/216572189-38a6532f-9896-48df-af9f-bb92fec4a981.png)
-
-These papers seem to be talking about effects of pandemic on society, mental health (stress, anxiety) and work environment (behavior, support)
-
-![Topic 3](https://user-images.githubusercontent.com/20987291/216572743-0493ae58-28da-48cf-9efd-b9332b0db24e.png)
-
-These papers could be related to infection detection, antibody sequencing and virus itself
+- Topic 1 seem to be concerned with immune response and antibodies
+- Topic 2 seem to be talking about effects of pandemic on society, mental health (stress, anxiety) and work environment (behavior, support)
+- Topic 3 papers could be related to infection detection, antibody sequencing and virus itself
