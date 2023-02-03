@@ -25,7 +25,7 @@ Dataset consists of JSON and CSV files. Each paper is saved in a nested JSON fil
 - Docker was used to install the neo4j (neo4j version 5.2.0)
 - Bash script (start_neo4j.sh) starts the docker container, neo4j server and imports the data
 
-![sample-graph](https://user-images.githubusercontent.com/20987291/216576683-bd568dc1-9676-4fc7-ba84-49f1c075f2e9.png)
+![sample-graph](https://user-images.githubusercontent.com/20987291/216580912-fe993dec-c20d-4c3e-b401-ac8d314967ca.png)
 
 ![graph](https://user-images.githubusercontent.com/20987291/216578879-aa094287-ddc6-48d4-8fcb-3f3bb903c766.png)
 
