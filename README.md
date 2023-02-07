@@ -59,4 +59,5 @@ covid19-literature-analysis
   |--- graph_db: Post project exploratory work to store and represent data using neo4j and PySpark GraphFrames
   |--- images: README file images
   |--- modeling: Modeling work
+  |--- ppt: Contains a presentation describing the whole project
 ```
