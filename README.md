@@ -6,6 +6,7 @@
 3. [Methodology](#method)
 4. [Graph Database](#graph)
 5. [Results](#results)
+6. [Folder Structure](#repo)
 
 ## Introduction <a name="intro"></a>
 The coronavirus pandemic caused enormous health, economic, environmental, and social challenges to the entire human population. The entire research community worked tirelessly for a vaccine but could we help speeding up these efforts even more?
@@ -45,3 +46,17 @@ Below are a few sample results of topic modeling
 - Topic 1 seem to be concerned with immune response and antibodies
 - Topic 2 seem to be talking about effects of pandemic on society, mental health (stress, anxiety) and work environment (behavior, support)
 - Topic 3 papers could be related to infection detection, antibody sequencing and virus itself
+
+## Folder Structure <a name="repo"></a>
+
+```
+covid19-literature-analysis
+  |
+  |--- data_prep: Code for preprocessing the raw data
+         |--- cord19-parser.py: A python parser to convert the raw data into a structured CSV file
+         |--- Data-Preprocessing.ipynb: Data parser but using PySpark
+  |--- data_viz: Some visualizations to understand the data better
+  |--- graph_db: Post project exploratory work to store and represent data using neo4j and PySpark GraphFrames
+  |--- images: README file images
+  |--- modeling: Modeling work
+```
